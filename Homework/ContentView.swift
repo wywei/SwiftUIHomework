@@ -8,14 +8,39 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @EnvironmentObject var viewModel: AppListViewModel
+    
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+   
+        NavigationView {
+            ZStack {
+                if viewModel.appInfos.isEmpty {
+                    ProgressView()
+                }
+                if viewModel.appInfos.count > 0 {
+                    AppListView()
+                        .navigationTitle("App")
+                        .background(Color.bgGrayColor)
+                    
+                }
+                if let error = viewModel.error {
+                    VStack {
+                        Text(error)
+                        Button {
+                            viewModel.loadData()
+                        } label: {
+                            Text("retry")
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView().environmentObject(AppListViewModel())
     }
 }
